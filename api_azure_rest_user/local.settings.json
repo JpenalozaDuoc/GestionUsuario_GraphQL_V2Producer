@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "java",
+    "DB_USERNAME": "USERADMINTO",
+    "DB_PASSWORD": "Oracle12345.",
+    "DB_TNS_ADMIN": "iqkd6ds0zyf8ohax_high",
+    "DB_WALLET_PATH": "/wallet",
+    "EVENT_GRID_TOPIC_ENDPOINT": "https://g20-eventgrid-duocuc.eastus2-1.eventgrid.azure.net/api/events",
+    "EVENT_GRID_ACCESS_KEY": "4QLrThROPNgPIAuVW6QvaPkJuFl8F9SWkjjtU1pT04gES7FpzZaQJQQJ99BDACHYHv6XJ3w3AAABAZEGfNYs"
+  }
+}
