@@ -3,6 +3,9 @@ package userRest.event;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import userRest.model.User;
+
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.core.util.BinaryData;
 import com.azure.messaging.eventgrid.EventGridEvent;
@@ -60,4 +63,29 @@ public class EventGridProducer {
             System.out.println("Error al enviar el evento a Event Grid.");
         }
     }
+
+    //Metodo para enviar datos de usuario por el event grid
+    public void sendEvent(String eventType, User user) {
+    try {
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        // Convertir objeto User a JSON
+        String eventDataJson = objectMapper.writeValueAsString(user);
+        BinaryData data = BinaryData.fromString(eventDataJson);
+
+        EventGridEvent event = new EventGridEvent(
+            "User Event: " + eventType,
+            eventType,
+            data,
+            "1.0"
+        );
+
+        event.setEventTime(OffsetDateTime.now());
+        eventGridPublisherClient.sendEvent(event);
+        System.out.println("Evento enviado a Event Grid: " + eventType);
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("Error al enviar el evento a Event Grid.");
+    }
+}
 }

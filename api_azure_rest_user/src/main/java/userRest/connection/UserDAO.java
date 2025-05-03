@@ -73,49 +73,22 @@ public class UserDAO {
     }
 
     public static boolean createUser(String name, String email, String password) {
-        String query = "INSERT INTO USUARIOS (name, email, password) VALUES (?, ?, ?)";
-        Connection conn = null;
-
         try {
-            conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false); // Iniciar transacción
-
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, name);
-                stmt.setString(2, email);
-                stmt.setString(3, password);
-
-                int rowsAffected = stmt.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    conn.commit(); // Confirmar transacción
-                    // Enviar evento a Event Grid
-                    eventProducer.sendEvent("UserCreated", String.valueOf(rowsAffected), name); 
-                    return true;
-                } else {
-                    conn.rollback(); // Revertir en caso de error
-                    return false;
-                }
-            }
-        } catch (SQLException e) {
-            if (conn != null) {
-                try {
-                    conn.rollback(); // Revertir transacción en caso de error
-                } catch (SQLException rollbackEx) {
-                    rollbackEx.printStackTrace();
-                }
-            }
-            e.printStackTrace();
+            // Crear el objeto User
+            User user = new User();
+            user.setName(name);
+            user.setEmail(email);
+            user.setPassword(password); // solo si vas a usarlo
+    
+            // Enviar el evento al Event Grid
+            EventGridProducer eventProducer = new EventGridProducer();
+            eventProducer.sendEvent("UserCreated", user);
+    
+            System.out.println("Evento UserCreated enviado al Event Grid.");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error al crear evento UserCreated: " + e.getMessage());
             return false;
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true); // Restaurar configuración de autocommit
-                    conn.close(); // Cerrar la conexión
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
